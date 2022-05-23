@@ -1,9 +1,9 @@
 ---
 
-- name: stop apache server
-  service: 
-    name: apache2
-    state: stopped
+#- name: stop apache server
+#  service: 
+#    name: apache2
+#   state: stopped
 
 - name: install docker contenaire nginx
   community.docker.docker_container:
