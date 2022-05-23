@@ -2,7 +2,7 @@
 
 - name: stop apache server
   service: 
-    name: apache
+    name: apache2
     state: stopped
 
 - name: install docker contenaire nginx
