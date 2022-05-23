@@ -30,7 +30,7 @@
 - name: install python docker module
   pip:
     name: docker
-- name: check if focker is running
+- name: check if docker is running
   service:
     name: docker
     state: started
