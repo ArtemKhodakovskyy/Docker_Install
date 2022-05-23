@@ -27,7 +27,13 @@
       - containerd.io
     state: latest
     update_cache: true
+- name: install python docker module
+  pip:
+    name: docker
 - name: check if focker is running
   service:
     name: docker
-    state: started 
+    state: started
+- name: inclure install docker
+  include_tasks:
+    file: docker.yml 

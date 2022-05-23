@@ -1,0 +1,13 @@
+---
+
+- name: stop apache server
+  service: apache
+    state: stopped
+
+- name: install docker contenaire nginx
+  community.docker.docker_container:
+    name: nginx
+    image: nginx
+    state: started
+    ports: 
+      - 8080:80
