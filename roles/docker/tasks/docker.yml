@@ -12,3 +12,5 @@
     state: started
     ports: 
       - 8080:80
+    volumes:
+      - "/var/www/html:/usr/share/nginx/html:ro"
