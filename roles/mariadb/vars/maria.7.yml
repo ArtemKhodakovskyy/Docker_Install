@@ -1,0 +1,4 @@
+maria:
+  - python-mysql
+  - mariadb-server
+ 

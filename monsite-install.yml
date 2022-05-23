@@ -1,0 +1,7 @@
+---
+- name: "Monsite configuration"
+  hosts: apache
+  #gather_facts: no
+  tags: "apache"
+  roles:
+    - role: "web"

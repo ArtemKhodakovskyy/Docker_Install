@@ -1,0 +1,13 @@
+---
+- name: "Monsite configuration"
+  hosts: apache
+  #gather_facts: no
+  tags: "apache"
+  tasks:
+    - name: "test"
+      manage_host:
+        entries:
+          - ip: 10.0.2.51
+            names: ["http1"]
+          - ip: 10.0.2.101
+            names: ["bdd1"]  

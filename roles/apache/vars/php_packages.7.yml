@@ -1,0 +1,9 @@
+php_packages:
+  - php
+  - php-mysql
+  - php-xml
+  - php-mbstring
+  - php-mcrypt
+  - php-gd
+  - php-intl
+

@@ -1,0 +1,38 @@
+---
+- name: "epel activation"
+  yum:
+    name: "epel-release"
+    state: present
+ 
+- name: Import remi GPG key.
+  rpm_key:
+    key: http://rpms.remirepo.net/RPM-GPG-KEY-remi
+    state: present
+ 
+- name: Import remi GPG key 2018.
+  rpm_key:
+    key: http://rpms.remirepo.net/RPM-GPG-KEY-remi2018
+    state: present
+ 
+- name: "remi repo activation"
+  yum:
+    name: "https://rpms.remirepo.net/enterprise/remi-release-8.rpm"
+    state: present
+  when: ansible_facts['distribution_major_version'] == "8"
+
+- name: "remi repo activation"
+  yum:
+    name: "https://rpms.remirepo.net/enterprise/remi-release-7.rpm"
+    state: present
+  when: ansible_facts['distribution_major_version'] == "7"   
+ 
+- name: "install php70 packages for Centos"
+  yum:
+    name: "{{ php_packages }}"
+    state: latest
+    enablerepo: "remi-php70"
+  include_vars: "../vars/php_packages.{{ ansible_facts['distribution_major_version'] }}.yml"
+  notify: [ "apache restart" ]
+
+
+

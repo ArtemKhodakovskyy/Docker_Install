@@ -1,0 +1,11 @@
+---
+
+- name: Install docker
+  become: yes
+  hosts: all
+  gather_facts: yes
+  tasks:
+    - name: Install docker 
+      include_role:
+        name: docker
+

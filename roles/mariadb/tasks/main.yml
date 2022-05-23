@@ -1,0 +1,11 @@
+---
+- name: "mariadb-server installation"
+  package:
+    name: "{{ maria }}"
+    state: "present"
+  include_vars: "../vars/maria.{{ ansible_facts['distribution_major_version'] }}.yml"
+- name: "start mariadb service"
+  service:
+    name: "mariadb"
+    state: "started"
+    enabled: yes

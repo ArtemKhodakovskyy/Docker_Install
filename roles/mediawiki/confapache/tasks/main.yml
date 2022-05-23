@@ -1,0 +1,62 @@
+---
+- name : "set facts for centos or debian"
+  set_fact:
+    web_user: "{% if ansible_facts['distribution'] == 'Centos' %}apache{% else %}www-data{% endif %}"
+    web_group: "{% if ansible_facts['distribution'] == 'Centos' %}apache{% else %}www-data{% endif %}"
+
+- name: "mediawiki directory"
+  file:
+    path: "{{mediawiki_directory}}"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    state: directory
+- name: "uncompress mediawiki archive"
+  unarchive:
+    src: "{{mediawiki_archive_url}}"
+    dest: "{{mediawiki_directory}}"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    remote_src: yes
+    extra_opts: --transform=s/mediawiki-[0-9\.]*\///
+- name: Ensure acl is installed before using an unprivileged user
+  package:
+    name: acl,git
+    state: latest
+- name: "mediawiki configuration"
+  become: yes
+  become_user: "{{ web_user }}"
+  args:
+    creates: "{{mediawiki_directory}}/LocalSettings.php"
+    chdir: "{{mediawiki_maintenance_directory}}"
+  command:
+    php install.php --scriptpath /{{mediawiki_name}}
+      --server https://{{ user.slug }}-http2.qualibre-formations.fr
+      --dbname mediawiki --lang fr
+      --dbuser {{mediawiki_db_user}}
+      --dbpass {{mediawiki_db_password}}
+      --pass {{mediawiki_admin_password}}
+      --dbserver {{mediawiki_db_host}}
+      {{mediawiki_title}} {{mediawiki_admin_user}}
+  run_once: yes
+  delegate_to: "{{item}}"
+  with_items: "{{groups.apache}}"
+- name: "mediawiki db update"
+  become: yes
+  become_user: "{{ web_user }}"
+  command:
+    php update.php --quick
+  args:
+    chdir: "{{mediawiki_maintenance_directory}}"
+  run_once: yes
+  register: update_result
+  changed_when: "' ...done.' in update_result.stdout"
+
+- name: "test url"
+  uri:
+    url: "https://{{ user.slug }}-http2.qualibre-formations.fr/{{ mediawiki_name }}/index.php/Accueil"
+    return_content: yes
+  register: webpage
+- name: "fail if MediaWiki is absent"
+  fail:
+    msg: 'URL KO'
+  when: "'MediaWiki' not in webpage.content"
